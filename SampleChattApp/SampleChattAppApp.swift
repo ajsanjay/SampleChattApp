@@ -11,7 +11,7 @@ import SwiftUI
 struct SampleChattAppApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            WelcomeScreen()
         }
     }
 }
