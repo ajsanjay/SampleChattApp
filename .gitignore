@@ -1,0 +1,59 @@
+# Created by http://www.gitignore.io
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Xcode
+build/
+DerivedData/
+*.xcworkspace
+!default.xcworkspace
+xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/xcshareddata/WorkspaceSettings.xcsettings
+
+# SwiftPM
+/.swiftpm
+Package.resolved
+.build/
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Carthage
+Carthage/
+Carthage/Build/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# Archives and temporary files
+*.xcuserstate
+*.moved-aside
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+# App specific
+*.plist
+
+# Swift Package Manager Checkouts
+Packages/
+
+# SwiftUI Previews Cache
+.swiftpm/xcode/package.cache
+
+# SPM build artifacts
+/.build/
+
