@@ -16,7 +16,7 @@ struct WelcomeScreen: View {
             DefaultBG()
             VStack {
                 ConnectionStatusView(status: viewModel.connectionStatus) {
-                    viewModel.connect()
+//                    viewModel.recreateSocketAndConnect()
                 }
                     .padding(.bottom)
                 ScrollView {

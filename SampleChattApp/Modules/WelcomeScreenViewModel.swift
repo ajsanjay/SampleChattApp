@@ -51,31 +51,21 @@ class WelcomeScreenViewModel: ObservableObject, WebSocketDelegate {
     
     func getSubTitle(botTyp: ChatBot) -> String {
         let messageArray: [ChattMessage]
-        
         switch botTyp {
-        case .supportBot:
-            messageArray = supportBot
-        case .salesBot:
-            messageArray = salesBot
-        case .faqBot:
-            messageArray = faqBot
+        case .supportBot: messageArray = supportBot
+        case .salesBot: messageArray = salesBot
+        case .faqBot: messageArray = faqBot
         }
-        
         return messageArray.last.map { getConversationSubtitle(for: $0) } ?? "No conversations available"
     }
-    
+
     func getLastMessageStatus(for botType: ChatBot) -> MessageStatus? {
         let messageArray: [ChattMessage]
-        
         switch botType {
-        case .supportBot:
-            messageArray = supportBot
-        case .salesBot:
-            messageArray = salesBot
-        case .faqBot:
-            messageArray = faqBot
+        case .supportBot: messageArray = supportBot
+        case .salesBot: messageArray = salesBot
+        case .faqBot: messageArray = faqBot
         }
-        
         return messageArray.last?.status
     }
 
@@ -84,7 +74,6 @@ class WelcomeScreenViewModel: ObservableObject, WebSocketDelegate {
     }
     
     func send(message: ChattMessage) {
-        
         guard connectionStatus == .connected else {
             print("Connection is not established, message cannot be sent.")
             socket = nil
@@ -95,7 +84,6 @@ class WelcomeScreenViewModel: ObservableObject, WebSocketDelegate {
         }
         
         let encoder = JSONEncoder()
-        
         do {
             let jsonData = try encoder.encode(message)
             if let jsonString = String(data: jsonData, encoding: .utf8) {
@@ -139,7 +127,6 @@ class WelcomeScreenViewModel: ObservableObject, WebSocketDelegate {
             do {
                 var message = try decoder.decode(ChattMessage.self, from: data)
                 message.status = message.status ?? .received
-                
                 switch message.botType {
                 case .supportBot:
                     updateMessageList(&supportBot, with: message)
@@ -148,7 +135,6 @@ class WelcomeScreenViewModel: ObservableObject, WebSocketDelegate {
                 case .faqBot:
                     updateMessageList(&faqBot, with: message)
                 }
-                
             } catch {
                 unKnownMessage.append(jsonString)
                 print("Failed to decode message: \(error)")
@@ -160,10 +146,8 @@ class WelcomeScreenViewModel: ObservableObject, WebSocketDelegate {
         if let index = messages.firstIndex(where: { $0.id == message.id }) {
             if message.status == .draft {
                 messages[index].status = .sent
-                print("Updated message \(message.message) to .sent")
             } else {
                 messages[index] = message
-                print("Replaced duplicate message with latest: \(message.message)")
             }
         } else {
             var newMessage = message
@@ -171,7 +155,6 @@ class WelcomeScreenViewModel: ObservableObject, WebSocketDelegate {
                 newMessage.status = .received
             }
             messages.append(newMessage)
-            print("Appended new message: \(newMessage.message) with status \(newMessage.status?.rawValue ?? "nil")")
         }
     }
     
@@ -199,6 +182,7 @@ class WelcomeScreenViewModel: ObservableObject, WebSocketDelegate {
             connectionStatus = .connected
             print("Received binary: \(data.count) bytes")
         case .error(let error):
+            connectionStatus = .disconnected
             print("Error: \(String(describing: error))")
         case .cancelled:
             connectionStatus = .canceled
@@ -207,15 +191,63 @@ class WelcomeScreenViewModel: ObservableObject, WebSocketDelegate {
             break
         }
     }
-    
+
+    private func checkInternetConnectivity(completion: @escaping (Bool) -> Void) {
+        guard let url = URL(string: "https://www.google.com") else {
+            completion(false)
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.timeoutInterval = 10
+        request.httpMethod = "HEAD"
+
+        URLSession.shared.dataTask(with: request) { _, response, error in
+            if let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) {
+                completion(true)
+            } else {
+                completion(false)
+            }
+        }.resume()
+    }
+
+    private func retryInternetConnectivity(retries: Int, delay: TimeInterval) {
+        checkInternetConnectivity { [weak self] isConnected in
+            guard let self = self else { return }
+
+            if isConnected {
+                DispatchQueue.main.async {
+                    print("[Network] Internet access confirmed.")
+                    self.connectionStatus = .connected
+                    self.connect()
+                }
+            } else if retries > 0 {
+                print("[Network] Retry checking internet... (\(retries) retries left)")
+                DispatchQueue.global().asyncAfter(deadline: .now() + delay) {
+                    self.retryInternetConnectivity(retries: retries - 1, delay: delay)
+                }
+            } else {
+                DispatchQueue.main.async {
+                    print("[Network] No internet after retries.")
+                    self.connectionStatus = .noInternet
+                }
+            }
+        }
+    }
+
     private func startNetworkMonitoring() {
         pathMonitor = NWPathMonitor()
         pathMonitor?.pathUpdateHandler = { [weak self] path in
-            DispatchQueue.main.async {
-                if path.status == .satisfied {
-                    self?.connectionStatus = .connected
-                } else {
-                    self?.connectionStatus = .noInternet
+            guard let self = self else { return }
+
+            if path.status == .satisfied {
+                DispatchQueue.global().asyncAfter(deadline: .now() + 1.5) {
+                    self.retryInternetConnectivity(retries: 3, delay: 2.0)
+                }
+            } else {
+                DispatchQueue.main.async {
+                    print("[Network] Not connected to a network.")
+                    self.connectionStatus = .noInternet
                 }
             }
         }
@@ -226,5 +258,4 @@ class WelcomeScreenViewModel: ObservableObject, WebSocketDelegate {
     deinit {
         pathMonitor?.cancel()
     }
-    
 }
