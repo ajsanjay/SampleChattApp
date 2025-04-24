@@ -13,6 +13,6 @@ struct MockData {
     static let screenWidth = UIScreen.main.bounds.size.width
     static let screenHeight = UIScreen.main.bounds.size.height
     
-    static let mockChatt: [ChattMessage] = [ChattMessage(message: "Hello", bot: "SupportBot"), ChattMessage(message: "Updates", bot: "SalesBot"), ChattMessage(message: "Hai", bot: "FAQBot")]
+    static let mockChatt: [ChattMessage] = [ChattMessage(message: "Hello", bot: "SupportBot", status: .draft), ChattMessage(message: "Updates", bot: "SalesBot", status: .sent), ChattMessage(message: "Hai", bot: "FAQBot", status: .received)]
     
 }

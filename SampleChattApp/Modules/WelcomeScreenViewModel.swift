@@ -7,6 +7,7 @@
 
 import Foundation
 import Starscream
+import Network
 
 class WelcomeScreenViewModel: ObservableObject, WebSocketDelegate {
     
@@ -18,11 +19,15 @@ class WelcomeScreenViewModel: ObservableObject, WebSocketDelegate {
     @Published var selectedBot: ChatBot = .supportBot
     @Published var unKnownMessage: [String] = []
     
+    private var pathMonitor: NWPathMonitor?
+    private let queue = DispatchQueue.global(qos: .background)
+    
     let chatBots = ["SupportBot", "SalesBot", "FAQBot"]
     var socket: WebSocket!
     
     init() {
         connect()
+        startNetworkMonitoring()
     }
     
     func connect() {
@@ -45,14 +50,37 @@ class WelcomeScreenViewModel: ObservableObject, WebSocketDelegate {
     }
     
     func getSubTitle(botTyp: ChatBot) -> String {
+        let messageArray: [ChattMessage]
+        
         switch botTyp {
         case .supportBot:
-            return supportBot.count == 0 ? "No converstions available" : (supportBot.count == 1 ? "1 Conversation available" : "\(supportBot.count) Conversation's available")
+            messageArray = supportBot
         case .salesBot:
-            return salesBot.count == 0 ? "No converstions available" : (salesBot.count == 1 ? "1 Conversation available" : "\(salesBot.count) Conversation's available")
+            messageArray = salesBot
         case .faqBot:
-            return faqBot.count == 0 ? "No converstions available" : (faqBot.count == 1 ? "1 Conversation available" : "\(faqBot.count) Conversation's available")
+            messageArray = faqBot
         }
+        
+        return messageArray.last.map { getConversationSubtitle(for: $0) } ?? "No conversations available"
+    }
+    
+    func getLastMessageStatus(for botType: ChatBot) -> MessageStatus? {
+        let messageArray: [ChattMessage]
+        
+        switch botType {
+        case .supportBot:
+            messageArray = supportBot
+        case .salesBot:
+            messageArray = salesBot
+        case .faqBot:
+            messageArray = faqBot
+        }
+        
+        return messageArray.last?.status
+    }
+
+    private func getConversationSubtitle(for message: ChattMessage) -> String {
+        return message.message
     }
     
     func send(message: ChattMessage) {
@@ -70,23 +98,33 @@ class WelcomeScreenViewModel: ObservableObject, WebSocketDelegate {
         }
     }
     
+    func appendMessage(_ message: ChattMessage) {
+        switch message.botType {
+        case .supportBot:
+            supportBot.append(message)
+        case .salesBot:
+            salesBot.append(message)
+        case .faqBot:
+            faqBot.append(message)
+        }
+    }
+    
     func handleReceivedText(_ jsonString: String) {
         let decoder = JSONDecoder()
         if let data = jsonString.data(using: .utf8) {
             do {
                 var message = try decoder.decode(ChattMessage.self, from: data)
-                if let status = message.status {
-                    message.status = status
-                } else {
-                    message.status = .received
+                message.status = message.status ?? .received
+                
+                switch message.botType {
+                case .supportBot:
+                    updateMessageList(&supportBot, with: message)
+                case .salesBot:
+                    updateMessageList(&salesBot, with: message)
+                case .faqBot:
+                    updateMessageList(&faqBot, with: message)
                 }
-                if message.botType == .supportBot {
-                    supportBot.append(message)
-                } else if message.botType == .salesBot {
-                    salesBot.append(message)
-                } else {
-                    faqBot.append(message)
-                }
+                
             } catch {
                 unKnownMessage.append(jsonString)
                 print("Failed to decode message: \(error)")
@@ -94,6 +132,28 @@ class WelcomeScreenViewModel: ObservableObject, WebSocketDelegate {
         }
     }
     
+    private func updateMessageList(_ messages: inout [ChattMessage], with message: ChattMessage) {
+        guard let status = message.status else {
+            messages.append(message)
+            return
+        }
+        if status == .draft {
+            if let index = messages.firstIndex(where: { $0.id == message.id }) {
+                messages[index].status = .sent
+                print("Updated message \(message.message) to .sent")
+                return
+            }
+        }
+        messages.append(message)
+    }
+    
+    func messages(for bot: ChatBot) -> [ChattMessage] {
+        switch bot {
+        case .supportBot: return supportBot
+        case .salesBot: return salesBot
+        case .faqBot: return faqBot
+        }
+    }
     
     func didReceive(event: Starscream.WebSocketEvent, client: Starscream.WebSocketClient) {
         switch event {
@@ -104,9 +164,11 @@ class WelcomeScreenViewModel: ObservableObject, WebSocketDelegate {
             connectionStatus = .disconnected
             print("Disconnected: \(reason) (code: \(code))")
         case .text(let text):
+            connectionStatus = .connected
             handleReceivedText(text)
             print("Received text: \(text)")
         case .binary(let data):
+            connectionStatus = .connected
             print("Received binary: \(data.count) bytes")
         case .error(let error):
             print("Error: \(String(describing: error))")
@@ -116,6 +178,25 @@ class WelcomeScreenViewModel: ObservableObject, WebSocketDelegate {
         default:
             break
         }
+    }
+    
+    private func startNetworkMonitoring() {
+        pathMonitor = NWPathMonitor()
+        pathMonitor?.pathUpdateHandler = { [weak self] path in
+            DispatchQueue.main.async {
+                if path.status == .satisfied {
+                    self?.connectionStatus = .connected
+                } else {
+                    self?.connectionStatus = .noInternet
+                }
+            }
+        }
+        let queue = DispatchQueue(label: "NetworkMonitor")
+        pathMonitor?.start(queue: queue)
+    }
+    
+    deinit {
+        pathMonitor?.cancel()
     }
     
 }

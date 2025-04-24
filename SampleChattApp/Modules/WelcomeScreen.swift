@@ -16,6 +16,7 @@ struct WelcomeScreen: View {
             DefaultBG()
             VStack {
                 ConnectionStatusView(status: viewModel.connectionStatus)
+                    .padding(.bottom)
                 ScrollView {
                     ForEach(viewModel.chatBots, id: \.self) { bot in
                         BotView(title: bot, subtitle: viewModel.getSubTitle(botTyp: ChatBot.getChatBotFrom(bot: bot)))
@@ -30,10 +31,12 @@ struct WelcomeScreen: View {
                             conversationList(for: viewModel.selectedBot)
                         }
                     }
+                    .padding(.top)
                 }
                 
                 ChattMessageView(botType: viewModel.selectedBot, chattMessage: $viewModel.chatText) {
-                    let chattMessage = ChattMessage(message: viewModel.chatText, bot: viewModel.selectedBot.rawValue, status: .sent)
+                    let chattMessage = ChattMessage(message: viewModel.chatText, bot: viewModel.selectedBot.rawValue, status: .draft)
+                    viewModel.appendMessage(chattMessage)
                     viewModel.send(message: chattMessage)
                 }
             }
@@ -41,22 +44,18 @@ struct WelcomeScreen: View {
     }
     
     @ViewBuilder
-        private func conversationList(for bot: ChatBot) -> some View {
-            switch bot {
-            case .supportBot:
-                ForEach(viewModel.supportBot, id: \.self) { conversation in
-                    ChattConversation(message: conversation.message, status: conversation.status ?? .sent)
+    private func conversationList(for bot: ChatBot) -> some View {
+        let conversations = viewModel.messages(for: bot)
+        
+        ForEach(conversations, id: \.self) { conversation in
+            ChattConversation(message: conversation.message, status: conversation.status ?? .draft)
+                .onTapGesture {
+                    if conversation.status == .draft {
+                        viewModel.send(message: conversation)
+                    }
                 }
-            case .salesBot:
-                ForEach(viewModel.salesBot, id: \.self) { conversation in
-                    ChattConversation(message: conversation.message, status: conversation.status ?? .sent)
-                }
-            case .faqBot:
-                ForEach(viewModel.faqBot, id: \.self) { conversation in
-                    ChattConversation(message: conversation.message, status: conversation.status ?? .sent)
-                }
-            }
         }
+    }
 }
 
 #Preview {

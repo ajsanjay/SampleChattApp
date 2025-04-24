@@ -9,7 +9,8 @@ import Foundation
 import SwiftUI
 
 
-struct ChattMessage: Codable, Hashable {
+struct ChattMessage: Codable, Hashable, Identifiable {
+    var id: UUID? = UUID()
     let message: String
     let bot: String
     var status: MessageStatus? 
@@ -21,7 +22,7 @@ struct ChattMessage: Codable, Hashable {
 enum MessageStatus: String, Codable {
     case sent
     case received
-    case unKnown
+    case draft
 }
 
 enum ChatBot: String {
@@ -56,6 +57,7 @@ enum ConnectionStatus: String {
     case connected
     case disconnected
     case canceled
+    case noInternet
     
     static func getBgColor(status: Self) -> Color {
         switch status {
@@ -67,6 +69,8 @@ enum ConnectionStatus: String {
             return .disConnected
         case .canceled:
             return .canceled
+        case .noInternet:
+            return .disConnected
         }
     }
     

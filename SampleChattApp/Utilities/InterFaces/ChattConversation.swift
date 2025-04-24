@@ -15,22 +15,28 @@ struct ChattConversation: View {
             Rectangle()
                 .fill(.ultraThinMaterial)
             HStack {
-                if status == .sent {
-                    Image(systemName: "platter.filled.top.and.arrow.up.iphone")
+                if status == .received {
+                    Image(systemName: "platter.filled.bottom.and.arrow.down.iphone")
                         .padding(.leading)
                     Text(message)
                         .font(.headline)
                         .padding(.top)
                         .padding(.bottom)
                     Spacer()
-                } else {
+                } else if status == .sent {
                     Spacer()
                     Text(message)
                         .font(.headline)
                         .padding(.top)
                         .padding(.bottom)
-                    Image(systemName: "platter.filled.bottom.and.arrow.down.iphone")
+                    Image(systemName: "platter.filled.top.and.arrow.up.iphone")
                         .padding(.trailing)
+                } else {
+                    Image(systemName: "rectangle.2.swap")
+                    Text(message)
+                        .font(.headline)
+                        .padding(.top)
+                        .padding(.bottom)
                 }
             }
         }
@@ -42,5 +48,5 @@ struct ChattConversation: View {
 }
 
 #Preview {
-    ChattConversation(message: "Hello", status: .received)
+    ChattConversation(message: "Hello", status: .draft)
 }
