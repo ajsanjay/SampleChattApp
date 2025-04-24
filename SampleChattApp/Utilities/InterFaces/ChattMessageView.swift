@@ -8,27 +8,38 @@
 import SwiftUI
 
 struct ChattMessageView: View {
+    
+    let botType: ChatBot
+    
     @Binding var chattMessage: String
     var onSend: () -> Void
     @FocusState private var isFocused: Bool
     
     var body: some View {
-        HStack {
-            TextField("Type your message...", text: $chattMessage)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .font(.title2)
-                .fontWeight(.medium)
-                .focused($isFocused)
-                .foregroundColor(.black)
-            
-            Button(action: {
-                if !chattMessage.trimmingCharacters(in: .whitespaces).isEmpty {
-                    onSend()
-                    chattMessage = ""
-                }
-            }) {
-                Image(systemName: "paperplane.fill")
+        VStack {
+            HStack {
+                Image(systemName: botType.iconName)
+                Text("Conversation with \(botType.rawValue)")
+                Spacer()
+            }
+            HStack {
+                TextField("Type your message...", text: $chattMessage)
+                    .autocorrectionDisabled(true)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .font(.title2)
+                    .fontWeight(.medium)
+                    .focused($isFocused)
                     .foregroundColor(.black)
+                
+                Button(action: {
+                    if !chattMessage.trimmingCharacters(in: .whitespaces).isEmpty {
+                        onSend()
+                        chattMessage = ""
+                    }
+                }) {
+                    Image(systemName: "paperplane.fill")
+                        .foregroundColor(.black)
+                }
             }
         }
         .padding()
@@ -45,7 +56,7 @@ struct ChattMessageView: View {
 }
 
 #Preview {
-    ChattMessageView(chattMessage: .constant("")) {
+    ChattMessageView(botType: .supportBot, chattMessage: .constant("")) {
         print("Send tapped")
     }
 }

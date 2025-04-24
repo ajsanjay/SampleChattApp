@@ -15,6 +15,8 @@ class WelcomeScreenViewModel: ObservableObject, WebSocketDelegate {
     @Published var faqBot: [ChattMessage] = []
     @Published var chatText = ""
     @Published var connectionStatus: ConnectionStatus = .connecting
+    @Published var selectedBot: ChatBot = .supportBot
+    @Published var unKnownMessage: [String] = []
     
     let chatBots = ["SupportBot", "SalesBot", "FAQBot"]
     var socket: WebSocket!
@@ -35,20 +37,29 @@ class WelcomeScreenViewModel: ObservableObject, WebSocketDelegate {
         socket.delegate = self
         socket.connect()
         connectionStatus = .connecting
-        print("Connecting to WebSocket...")
     }
     
     func disconnect() {
         socket.disconnect()
         connectionStatus = .disconnected
-        print("Disconnected from WebSocket")
     }
     
-    func send(person: ChattMessage) {
+    func getSubTitle(botTyp: ChatBot) -> String {
+        switch botTyp {
+        case .supportBot:
+            return supportBot.count == 0 ? "No converstions available" : (supportBot.count == 1 ? "1 Conversation available" : "\(supportBot.count) Conversation's available")
+        case .salesBot:
+            return salesBot.count == 0 ? "No converstions available" : (salesBot.count == 1 ? "1 Conversation available" : "\(salesBot.count) Conversation's available")
+        case .faqBot:
+            return faqBot.count == 0 ? "No converstions available" : (faqBot.count == 1 ? "1 Conversation available" : "\(faqBot.count) Conversation's available")
+        }
+    }
+    
+    func send(message: ChattMessage) {
         let encoder = JSONEncoder()
         
         do {
-            let jsonData = try encoder.encode(person)
+            let jsonData = try encoder.encode(message)
             if let jsonString = String(data: jsonData, encoding: .utf8) {
                 socket.write(string: jsonString) {
                     print("Person sent: \(jsonString)")
@@ -56,6 +67,30 @@ class WelcomeScreenViewModel: ObservableObject, WebSocketDelegate {
             }
         } catch {
             print("Failed to encode Person: \(error)")
+        }
+    }
+    
+    func handleReceivedText(_ jsonString: String) {
+        let decoder = JSONDecoder()
+        if let data = jsonString.data(using: .utf8) {
+            do {
+                var message = try decoder.decode(ChattMessage.self, from: data)
+                if let status = message.status {
+                    message.status = status
+                } else {
+                    message.status = .received
+                }
+                if message.botType == .supportBot {
+                    supportBot.append(message)
+                } else if message.botType == .salesBot {
+                    salesBot.append(message)
+                } else {
+                    faqBot.append(message)
+                }
+            } catch {
+                unKnownMessage.append(jsonString)
+                print("Failed to decode message: \(error)")
+            }
         }
     }
     
@@ -69,6 +104,7 @@ class WelcomeScreenViewModel: ObservableObject, WebSocketDelegate {
             connectionStatus = .disconnected
             print("Disconnected: \(reason) (code: \(code))")
         case .text(let text):
+            handleReceivedText(text)
             print("Received text: \(text)")
         case .binary(let data):
             print("Received binary: \(data.count) bytes")

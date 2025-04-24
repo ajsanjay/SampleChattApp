@@ -9,12 +9,19 @@ import Foundation
 import SwiftUI
 
 
-struct ChattMessage: Codable {
+struct ChattMessage: Codable, Hashable {
     let message: String
     let bot: String
+    var status: MessageStatus? 
     var botType: ChatBot {
         return ChatBot.getChatBotFrom(bot: bot)
     }
+}
+
+enum MessageStatus: String, Codable {
+    case sent
+    case received
+    case unKnown
 }
 
 enum ChatBot: String {
@@ -29,6 +36,17 @@ enum ChatBot: String {
             return .salesBot
         } else {
             return .faqBot
+        }
+    }
+    
+    var iconName: String {
+        switch self {
+        case .faqBot:
+            return "questionmark.circle"
+        case .salesBot:
+            return "cart"
+        case .supportBot:
+            return "person.2"
         }
     }
 }
