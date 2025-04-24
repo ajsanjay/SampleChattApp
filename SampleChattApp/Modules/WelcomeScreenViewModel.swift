@@ -44,6 +44,21 @@ class WelcomeScreenViewModel: ObservableObject, WebSocketDelegate {
         print("Disconnected from WebSocket")
     }
     
+    func send(person: ChattMessage) {
+        let encoder = JSONEncoder()
+        
+        do {
+            let jsonData = try encoder.encode(person)
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                socket.write(string: jsonString) {
+                    print("Person sent: \(jsonString)")
+                }
+            }
+        } catch {
+            print("Failed to encode Person: \(error)")
+        }
+    }
+    
     
     func didReceive(event: Starscream.WebSocketEvent, client: Starscream.WebSocketClient) {
         switch event {

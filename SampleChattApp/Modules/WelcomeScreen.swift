@@ -23,6 +23,10 @@ struct WelcomeScreen: View {
                             .padding(.trailing)
                     }
                 }
+                
+                ChattMessageView(chattMessage: $viewModel.chatText) {
+                    viewModel.send(person: MockData.mockChatt[0])
+                }
             }
         }
     }
