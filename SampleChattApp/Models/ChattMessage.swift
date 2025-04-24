@@ -37,6 +37,7 @@ enum ConnectionStatus: String {
     case connecting
     case connected
     case disconnected
+    case canceled
     
     static func getBgColor(status: Self) -> Color {
         switch status {
@@ -46,6 +47,8 @@ enum ConnectionStatus: String {
             return .connected
         case .disconnected:
             return .disConnected
+        case .canceled:
+            return .canceled
         }
     }
     

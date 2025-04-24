@@ -15,7 +15,7 @@ struct ConnectionStatusView: View {
     var body: some View {
         ZStack {
             Rectangle()
-                .fill(ConnectionStatus.getBgColor(status: status))
+                .fill(status == .connected ? .clear : ConnectionStatus.getBgColor(status: status))
                 .opacity(isVisible ? 1 : 0)
                 .animation(
                     .easeInOut(duration: 0.5).repeatForever(autoreverses: true),
@@ -23,7 +23,7 @@ struct ConnectionStatusView: View {
                 )
             HStack {
                 Text(status.rawValue.capitalized)
-                    .foregroundColor(.white)
+                    .foregroundColor(status == .connected ? .black : .white)
                     .padding(.leading)
                 Spacer()
             }

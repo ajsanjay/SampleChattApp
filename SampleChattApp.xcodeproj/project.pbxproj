@@ -10,12 +10,12 @@
 		8D5257B72DB9265A0049200A /* WelcomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D5257B62DB9265A0049200A /* WelcomeScreen.swift */; };
 		8D5257B92DB926800049200A /* WelcomeScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D5257B82DB926800049200A /* WelcomeScreenViewModel.swift */; };
 		8D5257BC2DB926AB0049200A /* ChattMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D5257BB2DB926AB0049200A /* ChattMessage.swift */; };
-		8D5257C02DB9289F0049200A /* WebSocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D5257BD2DB9289F0049200A /* WebSocketManager.swift */; };
 		8D5257C52DB94A960049200A /* DefaultBG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D5257C42DB94A950049200A /* DefaultBG.swift */; };
 		8D5257C72DB94E740049200A /* BotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D5257C62DB94E740049200A /* BotView.swift */; };
 		8D5257CB2DB950660049200A /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D5257CA2DB950660049200A /* MockData.swift */; };
 		8D5257D12DB959A30049200A /* ChattMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D5257D02DB959A30049200A /* ChattMessageView.swift */; };
 		8D5257D72DB95BA80049200A /* ConnectionStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D5257D62DB95BA80049200A /* ConnectionStatusView.swift */; };
+		8D5257DB2DB9CA7D0049200A /* Starscream in Frameworks */ = {isa = PBXBuildFile; productRef = 8D5257DA2DB9CA7D0049200A /* Starscream */; };
 		8DC3D88A2DB8E691002E3D04 /* SampleChattAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DC3D8892DB8E691002E3D04 /* SampleChattAppApp.swift */; };
 		8DC3D88E2DB8E693002E3D04 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8DC3D88D2DB8E693002E3D04 /* Assets.xcassets */; };
 		8DC3D8912DB8E693002E3D04 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8DC3D8902DB8E693002E3D04 /* Preview Assets.xcassets */; };
@@ -25,7 +25,6 @@
 		8D5257B62DB9265A0049200A /* WelcomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScreen.swift; sourceTree = "<group>"; };
 		8D5257B82DB926800049200A /* WelcomeScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScreenViewModel.swift; sourceTree = "<group>"; };
 		8D5257BB2DB926AB0049200A /* ChattMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattMessage.swift; sourceTree = "<group>"; };
-		8D5257BD2DB9289F0049200A /* WebSocketManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebSocketManager.swift; sourceTree = "<group>"; };
 		8D5257C42DB94A950049200A /* DefaultBG.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultBG.swift; sourceTree = "<group>"; };
 		8D5257C62DB94E740049200A /* BotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BotView.swift; sourceTree = "<group>"; };
 		8D5257CA2DB950660049200A /* MockData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockData.swift; sourceTree = "<group>"; };
@@ -42,6 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8D5257DB2DB9CA7D0049200A /* Starscream in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,14 +93,6 @@
 			path = MockData;
 			sourceTree = "<group>";
 		};
-		8D5257D82DB9C9B40049200A /* API */ = {
-			isa = PBXGroup;
-			children = (
-				8D5257BD2DB9289F0049200A /* WebSocketManager.swift */,
-			);
-			path = API;
-			sourceTree = "<group>";
-		};
 		8DC3D87D2DB8E691002E3D04 = {
 			isa = PBXGroup;
 			children = (
@@ -121,7 +113,6 @@
 			isa = PBXGroup;
 			children = (
 				8DC3D8892DB8E691002E3D04 /* SampleChattAppApp.swift */,
-				8D5257D82DB9C9B40049200A /* API */,
 				8D5257BA2DB926980049200A /* Models */,
 				8D5257B52DB926430049200A /* Modules */,
 				8D5257C32DB94A820049200A /* Utilities */,
@@ -156,6 +147,7 @@
 			);
 			name = SampleChattApp;
 			packageProductDependencies = (
+				8D5257DA2DB9CA7D0049200A /* Starscream */,
 			);
 			productName = SampleChattApp;
 			productReference = 8DC3D8862DB8E691002E3D04 /* SampleChattApp.app */;
@@ -186,6 +178,7 @@
 			);
 			mainGroup = 8DC3D87D2DB8E691002E3D04;
 			packageReferences = (
+				8D5257D92DB9CA7D0049200A /* XCRemoteSwiftPackageReference "Starscream" */,
 			);
 			productRefGroup = 8DC3D8872DB8E691002E3D04 /* Products */;
 			projectDirPath = "";
@@ -216,7 +209,6 @@
 				8D5257C72DB94E740049200A /* BotView.swift in Sources */,
 				8D5257B72DB9265A0049200A /* WelcomeScreen.swift in Sources */,
 				8D5257D12DB959A30049200A /* ChattMessageView.swift in Sources */,
-				8D5257C02DB9289F0049200A /* WebSocketManager.swift in Sources */,
 				8D5257D72DB95BA80049200A /* ConnectionStatusView.swift in Sources */,
 				8D5257C52DB94A960049200A /* DefaultBG.swift in Sources */,
 				8D5257CB2DB950660049200A /* MockData.swift in Sources */,
@@ -428,6 +420,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8D5257D92DB9CA7D0049200A /* XCRemoteSwiftPackageReference "Starscream" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/daltoniam/Starscream.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.8;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8D5257DA2DB9CA7D0049200A /* Starscream */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8D5257D92DB9CA7D0049200A /* XCRemoteSwiftPackageReference "Starscream" */;
+			productName = Starscream;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8DC3D87E2DB8E691002E3D04 /* Project object */;
 }

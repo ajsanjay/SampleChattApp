@@ -15,7 +15,7 @@ struct WelcomeScreen: View {
         ZStack {
             DefaultBG()
             VStack {
-                ConnectionStatusView(status: .disconnected)
+                ConnectionStatusView(status: viewModel.connectionStatus)
                 ScrollView {
                     ForEach(viewModel.chatBots, id: \.self) { bot in
                         BotView(title: bot)
