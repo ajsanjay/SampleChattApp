@@ -14,6 +14,8 @@
 		8D5257C52DB94A960049200A /* DefaultBG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D5257C42DB94A950049200A /* DefaultBG.swift */; };
 		8D5257C72DB94E740049200A /* BotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D5257C62DB94E740049200A /* BotView.swift */; };
 		8D5257CB2DB950660049200A /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D5257CA2DB950660049200A /* MockData.swift */; };
+		8D5257D12DB959A30049200A /* ChattMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D5257D02DB959A30049200A /* ChattMessageView.swift */; };
+		8D5257D72DB95BA80049200A /* ConnectionStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D5257D62DB95BA80049200A /* ConnectionStatusView.swift */; };
 		8DC3D88A2DB8E691002E3D04 /* SampleChattAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DC3D8892DB8E691002E3D04 /* SampleChattAppApp.swift */; };
 		8DC3D88E2DB8E693002E3D04 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8DC3D88D2DB8E693002E3D04 /* Assets.xcassets */; };
 		8DC3D8912DB8E693002E3D04 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8DC3D8902DB8E693002E3D04 /* Preview Assets.xcassets */; };
@@ -27,6 +29,8 @@
 		8D5257C42DB94A950049200A /* DefaultBG.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultBG.swift; sourceTree = "<group>"; };
 		8D5257C62DB94E740049200A /* BotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BotView.swift; sourceTree = "<group>"; };
 		8D5257CA2DB950660049200A /* MockData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockData.swift; sourceTree = "<group>"; };
+		8D5257D02DB959A30049200A /* ChattMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattMessageView.swift; sourceTree = "<group>"; };
+		8D5257D62DB95BA80049200A /* ConnectionStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionStatusView.swift; sourceTree = "<group>"; };
 		8DC3D8862DB8E691002E3D04 /* SampleChattApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SampleChattApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8DC3D8892DB8E691002E3D04 /* SampleChattAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleChattAppApp.swift; sourceTree = "<group>"; };
 		8DC3D88D2DB8E693002E3D04 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -65,18 +69,20 @@
 			isa = PBXGroup;
 			children = (
 				8D5257C92DB950560049200A /* MockData */,
-				8D5257C82DB950480049200A /* Style */,
+				8D5257C82DB950480049200A /* InterFaces */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
 		};
-		8D5257C82DB950480049200A /* Style */ = {
+		8D5257C82DB950480049200A /* InterFaces */ = {
 			isa = PBXGroup;
 			children = (
 				8D5257C42DB94A950049200A /* DefaultBG.swift */,
 				8D5257C62DB94E740049200A /* BotView.swift */,
+				8D5257D02DB959A30049200A /* ChattMessageView.swift */,
+				8D5257D62DB95BA80049200A /* ConnectionStatusView.swift */,
 			);
-			path = Style;
+			path = InterFaces;
 			sourceTree = "<group>";
 		};
 		8D5257C92DB950560049200A /* MockData */ = {
@@ -85,6 +91,14 @@
 				8D5257CA2DB950660049200A /* MockData.swift */,
 			);
 			path = MockData;
+			sourceTree = "<group>";
+		};
+		8D5257D82DB9C9B40049200A /* API */ = {
+			isa = PBXGroup;
+			children = (
+				8D5257BD2DB9289F0049200A /* WebSocketManager.swift */,
+			);
+			path = API;
 			sourceTree = "<group>";
 		};
 		8DC3D87D2DB8E691002E3D04 = {
@@ -107,7 +121,7 @@
 			isa = PBXGroup;
 			children = (
 				8DC3D8892DB8E691002E3D04 /* SampleChattAppApp.swift */,
-				8D5257BD2DB9289F0049200A /* WebSocketManager.swift */,
+				8D5257D82DB9C9B40049200A /* API */,
 				8D5257BA2DB926980049200A /* Models */,
 				8D5257B52DB926430049200A /* Modules */,
 				8D5257C32DB94A820049200A /* Utilities */,
@@ -201,7 +215,9 @@
 			files = (
 				8D5257C72DB94E740049200A /* BotView.swift in Sources */,
 				8D5257B72DB9265A0049200A /* WelcomeScreen.swift in Sources */,
+				8D5257D12DB959A30049200A /* ChattMessageView.swift in Sources */,
 				8D5257C02DB9289F0049200A /* WebSocketManager.swift in Sources */,
+				8D5257D72DB95BA80049200A /* ConnectionStatusView.swift in Sources */,
 				8D5257C52DB94A960049200A /* DefaultBG.swift in Sources */,
 				8D5257CB2DB950660049200A /* MockData.swift in Sources */,
 				8DC3D88A2DB8E691002E3D04 /* SampleChattAppApp.swift in Sources */,

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 
 struct ChattMessage: Codable {
@@ -30,4 +31,22 @@ enum ChatBot: String {
             return .faqBot
         }
     }
+}
+
+enum ConnectionStatus: String {
+    case connecting
+    case connected
+    case disconnected
+    
+    static func getBgColor(status: Self) -> Color {
+        switch status {
+        case .connecting:
+            return .connecting
+        case .connected:
+            return .connected
+        case .disconnected:
+            return .disConnected
+        }
+    }
+    
 }

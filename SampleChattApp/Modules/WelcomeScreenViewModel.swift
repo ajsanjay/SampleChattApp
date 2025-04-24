@@ -11,5 +11,6 @@ class WelcomeScreenViewModel: ObservableObject {
     @Published var supportBot: [ChattMessage] = []
     @Published var salesBot: [ChattMessage] = []
     @Published var faqBot: [ChattMessage] = []
+    @Published var chatText = ""
     let chatBots = ["SupportBot", "SalesBot", "FAQBot"]
 }

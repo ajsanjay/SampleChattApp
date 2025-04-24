@@ -14,11 +14,14 @@ struct WelcomeScreen: View {
     var body: some View {
         ZStack {
             DefaultBG()
-            ScrollView {
-                ForEach(viewModel.chatBots, id: \.self) { bot in
-                    BotView(title: bot)
-                        .padding(.leading)
-                        .padding(.trailing)
+            VStack {
+                ConnectionStatusView(status: .disconnected)
+                ScrollView {
+                    ForEach(viewModel.chatBots, id: \.self) { bot in
+                        BotView(title: bot)
+                            .padding(.leading)
+                            .padding(.trailing)
+                    }
                 }
             }
         }
