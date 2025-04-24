@@ -35,6 +35,7 @@ struct ChattMessageView: View {
                     if !chattMessage.trimmingCharacters(in: .whitespaces).isEmpty {
                         onSend()
                         chattMessage = ""
+                        isFocused = false
                     }
                 }) {
                     Image(systemName: "paperplane.fill")

@@ -84,17 +84,41 @@ class WelcomeScreenViewModel: ObservableObject, WebSocketDelegate {
     }
     
     func send(message: ChattMessage) {
+        
+        guard connectionStatus == .connected else {
+            print("Connection is not established, message cannot be sent.")
+            socket = nil
+            DispatchQueue.main.asyncAfter(deadline: .now()+2.0, execute: { [weak self] in
+                self?.connect()
+            })
+            return
+        }
+        
         let encoder = JSONEncoder()
         
         do {
             let jsonData = try encoder.encode(message)
             if let jsonString = String(data: jsonData, encoding: .utf8) {
                 socket.write(string: jsonString) {
-                    print("Person sent: \(jsonString)")
+                    print("Message sent: \(jsonString)")
+                    
+                    var updatedMessage = message
+                    updatedMessage.status = .sent
+                    
+                    DispatchQueue.main.async {
+                        switch updatedMessage.botType {
+                        case .supportBot:
+                            self.updateMessageList(&self.supportBot, with: updatedMessage)
+                        case .salesBot:
+                            self.updateMessageList(&self.salesBot, with: updatedMessage)
+                        case .faqBot:
+                            self.updateMessageList(&self.faqBot, with: updatedMessage)
+                        }
+                    }
                 }
             }
         } catch {
-            print("Failed to encode Person: \(error)")
+            print("Failed to encode message: \(error)")
         }
     }
     
@@ -133,18 +157,22 @@ class WelcomeScreenViewModel: ObservableObject, WebSocketDelegate {
     }
     
     private func updateMessageList(_ messages: inout [ChattMessage], with message: ChattMessage) {
-        guard let status = message.status else {
-            messages.append(message)
-            return
-        }
-        if status == .draft {
-            if let index = messages.firstIndex(where: { $0.id == message.id }) {
+        if let index = messages.firstIndex(where: { $0.id == message.id }) {
+            if message.status == .draft {
                 messages[index].status = .sent
                 print("Updated message \(message.message) to .sent")
-                return
+            } else {
+                messages[index] = message
+                print("Replaced duplicate message with latest: \(message.message)")
             }
+        } else {
+            var newMessage = message
+            if newMessage.status == nil || newMessage.status == .draft {
+                newMessage.status = .received
+            }
+            messages.append(newMessage)
+            print("Appended new message: \(newMessage.message) with status \(newMessage.status?.rawValue ?? "nil")")
         }
-        messages.append(message)
     }
     
     func messages(for bot: ChatBot) -> [ChattMessage] {

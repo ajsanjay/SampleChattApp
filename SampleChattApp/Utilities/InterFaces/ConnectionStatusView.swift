@@ -11,6 +11,7 @@ struct ConnectionStatusView: View {
     
     let status: ConnectionStatus
     @State private var isVisible = false
+    var onRetry: () -> Void
     
     var body: some View {
         ZStack {
@@ -26,6 +27,15 @@ struct ConnectionStatusView: View {
                     .foregroundColor(status == .connected ? .black : .white)
                     .padding(.leading)
                 Spacer()
+                if status == .disconnected || status == .canceled {
+                    Button {
+                        onRetry()
+                    } label: {
+                        Text("Retry")
+                            .foregroundColor(.black)
+                    }
+                    .background(.white)
+                }
             }
         }
         .frame(height: 25)
@@ -36,5 +46,7 @@ struct ConnectionStatusView: View {
 }
 
 #Preview {
-    ConnectionStatusView(status: .connecting)
+    ConnectionStatusView(status: .connecting) {
+        print("Retry")
+    }
 }

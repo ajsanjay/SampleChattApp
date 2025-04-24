@@ -15,7 +15,9 @@ struct WelcomeScreen: View {
         ZStack {
             DefaultBG()
             VStack {
-                ConnectionStatusView(status: viewModel.connectionStatus)
+                ConnectionStatusView(status: viewModel.connectionStatus) {
+                    viewModel.connect()
+                }
                     .padding(.bottom)
                 ScrollView {
                     ForEach(viewModel.chatBots, id: \.self) { bot in
@@ -48,7 +50,7 @@ struct WelcomeScreen: View {
         let conversations = viewModel.messages(for: bot)
         
         ForEach(conversations, id: \.self) { conversation in
-            ChattConversation(message: conversation.message, status: conversation.status ?? .draft)
+            ChattConversation(message: conversation.message, status: conversation.status ?? .received)
                 .onTapGesture {
                     if conversation.status == .draft {
                         viewModel.send(message: conversation)
