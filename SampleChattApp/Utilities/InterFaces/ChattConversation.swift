@@ -34,7 +34,7 @@ struct ChattConversation: View {
                 } else {
                     Image(systemName: "rectangle.2.swap")
                     Text(message)
-                        .font(.headline)
+                        .font(.callout)
                         .padding(.top)
                         .padding(.bottom)
                 }

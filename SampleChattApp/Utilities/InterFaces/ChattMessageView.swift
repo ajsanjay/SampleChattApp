@@ -26,7 +26,7 @@ struct ChattMessageView: View {
                 TextField("Type your message...", text: $chattMessage)
                     .autocorrectionDisabled(true)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .font(.title2)
+                    .font(.subheadline)
                     .fontWeight(.medium)
                     .focused($isFocused)
                     .foregroundColor(.black)
